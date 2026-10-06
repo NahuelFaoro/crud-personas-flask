@@ -12,6 +12,19 @@ class RepositorioPersonas:
 
 	def __init__(self) -> None:
 		self.__personas: list[Persona] = []
+		self.__cargar_datos_prueba()
+
+	def __cargar_datos_prueba(self) -> None:
+		"""Agrega cinco personas iniciales para probar la API."""
+		self.__personas.extend(
+			[
+				Persona("10000001", "Ana"),
+				Persona("10000002", "Luis"),
+				Persona("10000003", "María"),
+				Persona("10000004", "Pedro"),
+				Persona("10000005", "Sofía"),
+			]
+		)
 
 	def guardar(self, persona: Persona) -> None:
 		"""Agrega una persona, siempre que su DNI no esté registrado."""
