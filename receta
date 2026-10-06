@@ -1,0 +1,66 @@
+# Receta crear un CRUD
+
+* Como crer un CRUD con FLASK
+  * Requerimiento : Instalar flask si no esta
+  * Definir la estructura del proyecto : hacer un mermaid
+  * Crear la estructura del proyecto
+      * Crear la carpeta models
+      * Crear la carpeta repositories
+      * Crear la carpeta services
+      * El archivo api.py
+        * Podemos tener o no (A gusto) una carpeta tambien para la presentacion / controlador
+  * Describir la estructura del proyecto e informacion de como me gusta trabajar en el Readme.md
+      * Es importante contar con este archivo para darle contexto a la IA y no tener que repetirlo en cada prompt
+ * Creamos la clase principal en models
+      * Reglas de Negocio : Aca van las validaciones que aseguran que el objeto se mantiene consistente durante todo su ciclo de vida
+ * Crearmos el repositorio
+      * Persistimos el objeto ya sea en la base de datos, en archivos o en el mecanismo de persistencia que elijamos
+      * Defino las operaciones que necesito para guardar, buscar y eliminar objetos del lugar donde los persistimos
+      * En general esto es una base de datos
+      * El modelo no accede al repositorio nunca
+  * Creamos el servicio
+      * Reglas de negocio: Creamos reglas que requieran el coordinar varias lllamadas al modelo y usar el repo
+        * No hay legajo duplicado
+  * Creo el endpoint de Flask
+      * GET para todos
+      * GET que recupera uno individualmente
+      * POST para agregar uno nuevo
+      * PUT para modificar
+      * DELETE para borrar
+
+
+## Estructura propuesta para el CRUD de Persona
+
+```mermaid
+flowchart TD
+    proyecto["Proyecto"]
+
+    proyecto --> api["api.py<br/>API Flask y endpoints CRUD"]
+    proyecto --> modelo["model/"]
+    proyecto --> repositorio["repository/"]
+    proyecto --> servicio["service/"]
+    proyecto --> pruebas["tests/"]
+    proyecto --> readme["readme.md<br/>Descripción y ejecución"]
+    proyecto --> dependencias["requirements.txt<br/>Dependencias del proyecto"]
+
+    modelo --> persona["persona.py<br/>Clase Persona y validaciones"]
+    repositorio --> repo_persona["persona_repository.py<br/>Guardar, buscar y eliminar"]
+    servicio --> service_persona["persona_service.py<br/>Coordinar reglas y repositorio"]
+    pruebas --> test_persona["test_persona.py<br/>Pruebas del CRUD y validaciones"]
+
+    api -->|solicitudes CRUD| servicio
+    servicio -->|crear y validar Persona| persona
+    servicio -->|consultar y persistir| repo_persona
+    repo_persona -->|almacena| datos[("Persistencia")]
+
+    persona -.->|DNI requerido; nombre con inicial mayúscula y máximo 30 caracteres| reglas["Reglas de cada Persona"]
+    servicio -.->|evita DNI duplicados| unicidad["Unicidad entre personas"]
+```
+
+El modelo valida que cada persona sea consistente. La unicidad del DNI se
+comprueba en el servicio o repositorio, porque requiere comparar registros.
+Los endpoints de `api.py` implementan `GET` (todos y por DNI), `POST`, `PUT` y
+`DELETE`.
+      
+
+      
