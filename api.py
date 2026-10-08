@@ -6,7 +6,6 @@ from model.persona import Persona
 from repository.personas_repository import DniDuplicadoError
 from service.personas_service import PersonasService
 
-
 def crear_app(servicio: PersonasService | None = None) -> Flask:
 	"""Crea la aplicación Flask; acepta un servicio alternativo para pruebas."""
 	app = Flask(__name__)
@@ -55,6 +54,37 @@ def crear_app(servicio: PersonasService | None = None) -> Flask:
 			"obtener_persona", dni=persona.dni
 		)
 		return respuesta
+
+	@app.put("/persona/<string:dni>")
+	@app.put("/personas/<string:dni>")
+	def actualizar_persona(dni: str):
+		datos = request.get_json(silent=True)
+		if not isinstance(datos, dict):
+			return jsonify(error="El cuerpo debe ser un objeto JSON."), 400
+
+		if "nombre" not in datos:
+			return jsonify(error="Se requiere el campo 'nombre'."), 400
+
+		try:
+			persona = personas_service.actualizar_nombre(dni, datos["nombre"])
+		except (TypeError, ValueError) as error:
+			return jsonify(error=str(error)), 400
+
+		if persona is None:
+			return jsonify(error="No se encontró una persona con ese DNI."), 400
+		return jsonify(serializar(persona)), 200
+
+	@app.delete("/persona/<string:dni>")
+	@app.delete("/personas/<string:dni>")
+	def eliminar_persona(dni: str):
+		try:
+			eliminada = personas_service.eliminar_persona(dni)
+		except (TypeError, ValueError) as error:
+			return jsonify(error=str(error)), 400
+
+		if not eliminada:
+			return jsonify(error="No se encontró una persona con ese DNI."), 404
+		return "", 204
 
 	return app
 

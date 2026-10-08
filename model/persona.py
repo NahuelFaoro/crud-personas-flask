@@ -43,7 +43,7 @@ class Persona:
 			raise ValueError("Las letras posteriores a la inicial deben ser minúsculas.")
 
 		self._nombre = nombre
-
+        
 	@staticmethod
 	def _validar_dni(valor: str) -> str:
 		"""Valida y devuelve el DNI sin espacios exteriores."""

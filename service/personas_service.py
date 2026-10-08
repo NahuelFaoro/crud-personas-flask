@@ -20,3 +20,14 @@ class PersonasService:
         persona = Persona(dni=dni, nombre=nombre)
         self._repositorio.guardar(persona)
         return persona
+
+    def actualizar_nombre(self, dni: str, nombre: str) -> Persona | None:
+        persona = self._repositorio.obtener_por_dni(dni)
+        if persona is None:
+            return None
+
+        persona.nombre = nombre
+        return persona
+
+    def eliminar_persona(self, dni: str) -> bool:
+        return self._repositorio.eliminar(dni)
